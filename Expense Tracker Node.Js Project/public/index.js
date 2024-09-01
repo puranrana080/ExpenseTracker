@@ -19,3 +19,26 @@ function registeringUser(event){
         console.log("something is wrong",err)
     })
 }
+
+
+function loginUser(event){
+    event.preventDefault()
+    const loginData={
+        email:event.target.email.value,
+        password:event.target.password.value
+    }
+    axios.post("http://localhost:3000/user/login",loginData)
+    .then(response=>{
+        alert("Login successful")
+console.log("User Logged in",response.data.message)
+    })
+    .catch(err=>{
+        const p=document.querySelector('p')
+        const exist=document.createElement('p')
+        exist.appendChild(document.createTextNode("User Not found"))
+        p.appendChild(exist)
+    
+        console.log("Error in server",err)
+    })
+
+}

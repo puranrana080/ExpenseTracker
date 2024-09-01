@@ -41,6 +41,37 @@ app.post('/user/register',async (req,res,next)=>{
 })
 
 
+app.post("/user/login", async(req,res,next)=>{
+     try{
+        console.log(req.body)
+        const userAvailable=await User.findOne({
+            where:{userEmail:req.body.email}
+        })
+        if(userAvailable){
+
+            if(req.body.password===userAvailable.password){
+                console.log("login successful")
+                     res.status(200).json({message:"logged In"})
+            }
+            else{
+                console.log("Password Wrong")
+                res.status(401).json({message:"password Wrong"})
+            }
+
+
+        }
+        else{
+            console.log("not logged in")
+            res.status(404).json({message:"need to signUp"})
+        }
+
+     }
+     catch(error){
+res.status(500).json({message:"Internal error"})
+     }
+})
+
+
 
 
 
