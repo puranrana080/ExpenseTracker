@@ -1,6 +1,7 @@
 const express = require('express')
 const path = require('path')
 const sequelize = require("./util/user")
+const bcrypt=require('bcrypt')
 const User = require("./model/user")
 const app = express()
 
@@ -14,24 +15,29 @@ app.get('/', (req, res, next) => {
 
 app.post('/user/register', async (req, res, next) => {
     try {
-        console.log(req.body)
+console.log(req.body)
+        const {userName,userEmail,password}=req.body
+        
 
         const existingUser = await User.findOne({
             where: {
-                userEmail: req.body.userEmail
+                userEmail: userEmail
             }
+            
         })
+        console.log(existingUser)
         if (existingUser) {
             return res.status(400).json({ message: "User Already exist, Try with new Email" })
         }
+        const saltRounds=10;
 
-        const user = await User.create({
-            userName: req.body.userName,
-            userEmail: req.body.userEmail,
-            password: req.body.password
+        bcrypt.hash(password,saltRounds,async(err,hash)=>{
+            console.log(err)
+            await User.create({userName,
+                userEmail,
+                password:hash})
+            res.status(201).json({ message: "Successfully created new user" })
         })
-        console.log(user)
-        res.status(200).json({ newUser: user })
 
     }
     catch (err) {
@@ -49,10 +55,18 @@ app.post("/user/login", async (req, res, next) => {
         })
         if (userAvailable) {
 
-            if (req.body.password === userAvailable.password) {
+            const isPasswordValid= await bcrypt.compare(req.body.password,userAvailable.password);
+
+            if(isPasswordValid){
                 console.log("login successful")
                 res.status(200).json({ message: "User Login Successful" })
+
             }
+
+            // if (req.body.password === userAvailable.password) {
+            //     console.log("login successful")
+                
+            // }
             else {
                 console.log("Password Wrong")
                 res.status(401).json({ message: "User not authorized" })

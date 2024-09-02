@@ -8,13 +8,13 @@ function registeringUser(event) {
 
     axios.post("http://localhost:3000/user/register", newUser)
         .then(response => {
-            console.log("User Added", response.data.newUser)
+            console.log("User Added", response.message)
         })
         .catch(err => {
-            const p = document.querySelector('p')
-            const exist = document.createElement('p')
-            exist.appendChild(document.createTextNode("User Already exist"))
-            p.appendChild(exist)
+            
+
+            const p = document.querySelector('#message')
+            p.innerHTML = err.message
 
             console.log("something is wrong", err)
         })
