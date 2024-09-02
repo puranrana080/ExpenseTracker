@@ -8,11 +8,9 @@ function registeringUser(event) {
 
     axios.post("http://localhost:3000/user/register", newUser)
         .then(response => {
-            console.log("User Added", response.message)
+            console.log("User Added", response.data.message)
         })
         .catch(err => {
-            
-
             const p = document.querySelector('#message')
             p.innerHTML = err.message
 
@@ -31,8 +29,9 @@ function loginUser(event) {
         .then(response => {
             alert("Login successful")
             console.log("User Logged in", response.data.message)
-            const p = document.querySelector('#message')
-            p.innerHTML = ""
+            window.location.href = "/expense"
+
+
         })
         .catch(err => {
             const p = document.querySelector('#message')
@@ -40,5 +39,78 @@ function loginUser(event) {
 
             console.log("Error in server", err)
         })
+
+}
+
+
+
+function handleAddExpense(event) {
+    event.preventDefault()
+
+    const expense = {
+        amount: event.target.amount.value,
+        description: event.target.description.value,
+        category: event.target.category.value
+    }
+
+    axios.post("http://localhost:3000/expense/add-expense", expense)
+        .then(response => {
+            displayExpenseOnScreen(response.data.expenseData)
+            event.target.reset()
+        })
+
+        .catch(err => {
+            console.log(err)
+        })
+
+
+}
+
+
+window.addEventListener("DOMContentLoaded", () => {
+
+    axios.get("http://localhost:3000/expense/get-expense")
+        .then(response => {
+            console.log( response.data.allExpense)
+            for (let i = 0; i < response.data.allExpense.length; i++) {
+                displayExpenseOnScreen(response.data.allExpense[i])
+            }
+        })
+        .catch(err => {
+            console.log(err)
+        })
+
+
+
+
+})
+
+function displayExpenseOnScreen(expense) {
+    const list = document.querySelector('ul')
+
+
+    const newList = document.createElement('li')
+    newList.appendChild(document.createTextNode(`${expense.amount}  ${expense.description}  ${expense.category}  `))
+    list.appendChild(newList)
+
+    const delBtn = document.createElement('button')
+    delBtn.appendChild(document.createTextNode("Delete Expense"))
+    newList.appendChild(delBtn)
+
+
+
+    delBtn.addEventListener("click", () => {
+
+        axios.delete(`http://localhost:3000/expense/delete-expense/${expense.id}`)
+            .then(result => {
+                console.log("Expense Deleted")
+                list.removeChild(newList)
+            })
+            .catch(err => {
+                console.log(err)
+            })
+    })
+
+
 
 }

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Expense</title>
+</head>
+
+<body>
+
+    <form onsubmit="handleAddExpense(event)">
+        <label for="">Choose ExpenseAmount</label>
+        <input type="text" id="amount" name="amount">
+        <label for="">Choose description</label>
+        <input type="text" id="description" name="description">
+        <label for="category">Choose a category</label>
+        <select name="category" id="category">
+            <option value="" disabled selected>Select any one</option>
+            <option value="food">Food</option>
+            <option value="petrol">Petrol</option>
+            <option value="salery">Salery</option>
+        </select>
+
+        <button type="submit">Add Expense</button>
+
+    </form>
+    <ul></ul>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.7/axios.min.js" integrity="sha512-DdX/YwF5e41Ok+AI81HI8f5/5UsoxCVT9GKYZRIzpLxb8Twz4ZwPPX+jQMwMhNQ9b5+zDEefc+dcvQoPWGNZ3g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="index.js"></script>
+
+</body>
+
+</html>
