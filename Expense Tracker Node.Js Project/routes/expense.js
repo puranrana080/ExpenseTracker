@@ -1,70 +1,20 @@
-const express=require('express')
-const router=express.Router()
-const Expense=require('../model/expense')
-const path=require('path')
+const express = require('express')
+const router = express.Router()
+
+const expenseController = require('../controller/expense')
+
+const userauthentication = require('../middleware/auth')
 
 
-router.get('/expense',(req,res,next)=>{
-    res.sendFile(path.join(__dirname,"../public/add_expense.html"))
-})
+router.get('/expense', expenseController.getExpenseFrom)
 
-router.post('/expense/add-expense', async (req,res,next)=>{
-    try{
+router.post('/expense/add-expense', userauthentication.authenticate, expenseController.postAddExpense)
 
-        const expense=await Expense.create({
-            amount:req.body.amount,
-            description:req.body.description,
-            category:req.body.category
-        })
+router.get('/expense/get-expense', userauthentication.authenticate, expenseController.getExpense)
 
-        console.log(expense)
-        res.status(200).json({
-            expenseData:expense,
-            message:"Expense added in db"
-        })
-
-    }
-    catch(error){
-        console.log(error)
-    }
-
-})
-
-
-router.get('/expense/get-expense',async (req,res,next)=>{
-    try{
-        const getAllExpense=await Expense.findAll()
-        res.status(200).json({
-            allExpense:getAllExpense
-        })
-
-    }
-    catch(error){
-        console.log(error)
-        res.status(500).json({ message: "Internal server error"})
-    }
-
-
-})
-
-router.delete('/expense/delete-expense/:Id',async (req,res,next)=>{
-   try{ 
-const expenseId=req.params.Id
-    await Expense.destroy({ 
-        where:{id:expenseId}
-    })
-    res.status(200).json({
-        message:"Expense deleted form db"
-    })
-}
-catch(error){
-    console.log(error)
-    res.status(500).json({message:"failed to delete"})
-}
-
-})
+router.delete('/expense/delete-expense/:Id', userauthentication.authenticate, expenseController.deleteExpense)
 
 
 
 
-module.exports=router
+module.exports = router

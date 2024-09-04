@@ -9,6 +9,7 @@ function registeringUser(event) {
     axios.post("http://localhost:3000/user/register", newUser)
         .then(response => {
             console.log("User Added", response.data.message)
+            event.target.reset()
         })
         .catch(err => {
             const p = document.querySelector('#message')
@@ -29,6 +30,8 @@ function loginUser(event) {
         .then(response => {
             alert("Login successful")
             console.log("User Logged in", response.data.message)
+
+            localStorage.setItem('token', response.data.token)
             window.location.href = "/expense"
 
 
@@ -53,7 +56,9 @@ function handleAddExpense(event) {
         category: event.target.category.value
     }
 
-    axios.post("http://localhost:3000/expense/add-expense", expense)
+
+    const token = localStorage.getItem('token')
+    axios.post("http://localhost:3000/expense/add-expense", expense, { headers: { "Authorization": token } })
         .then(response => {
             displayExpenseOnScreen(response.data.expenseData)
             event.target.reset()
@@ -68,10 +73,11 @@ function handleAddExpense(event) {
 
 
 window.addEventListener("DOMContentLoaded", () => {
+    const token = localStorage.getItem('token')
 
-    axios.get("http://localhost:3000/expense/get-expense")
+    axios.get("http://localhost:3000/expense/get-expense", { headers: { "Authorization": token } })
         .then(response => {
-            console.log( response.data.allExpense)
+            console.log(response.data.allExpense)
             for (let i = 0; i < response.data.allExpense.length; i++) {
                 displayExpenseOnScreen(response.data.allExpense[i])
             }
@@ -100,8 +106,9 @@ function displayExpenseOnScreen(expense) {
 
 
     delBtn.addEventListener("click", () => {
+        const token = localStorage.getItem('token')
 
-        axios.delete(`http://localhost:3000/expense/delete-expense/${expense.id}`)
+        axios.delete(`http://localhost:3000/expense/delete-expense/${expense.id}`, { headers: { "Authorization": token } })
             .then(result => {
                 console.log("Expense Deleted")
                 list.removeChild(newList)
