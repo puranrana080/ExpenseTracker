@@ -114,7 +114,7 @@ function showLeaderBoard() {
             leaderBoardEle.innerHTML = '<h1>Leaderboard</h1>'
 
             userLeaderBoardArray.data.forEach((userDetails) => {
-                leaderBoardEle.innerHTML += `<li> Name-${userDetails.name}--Total Expense ${userDetails.total_cost}     </li>`
+                leaderBoardEle.innerHTML += `<li> Name-${userDetails.userName}--Total Expense ${userDetails.total_cost}     </li>`
 
             })
         }
