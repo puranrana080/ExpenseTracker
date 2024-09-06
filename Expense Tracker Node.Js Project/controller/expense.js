@@ -1,5 +1,6 @@
 const Expense = require('../model/expense')
 const path = require('path')
+const User=require('../model/user')
 
 exports.getExpenseFrom = (req, res, next) => {
     res.sendFile(path.join(__dirname, "../public/add_expense.html"))
@@ -15,6 +16,13 @@ exports.postAddExpense = async (req, res, next) => {
             category: req.body.category,
             userId: req.user.id
         })
+
+        const user=await User.findByPk(req.user.id)
+        user.total_cost+=parseFloat(req.body.amount)
+
+        await user.save()
+
+        
 
         console.log(expense)
         res.status(200).json({

@@ -17,7 +17,8 @@ const User=sequelize.define('users',{
         type:Sequelize.STRING,
         allownull:false
     },
-    ispremiumuser:Sequelize.BOOLEAN
+    ispremiumuser:Sequelize.BOOLEAN,
+     total_cost:Sequelize.FLOAT
 })
 
 module.exports=User
