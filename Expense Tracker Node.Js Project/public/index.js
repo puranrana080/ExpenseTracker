@@ -73,21 +73,56 @@ function handleAddExpense(event) {
 
 }
 
-async function updatePremiumStatus(){
-    try{
-        const token=localStorage.getItem('token')
+async function updatePremiumStatus() {
+    try {
+        const token = localStorage.getItem('token')
 
-        const userResponse=await axios.get('http://localhost:3000/user/ispremium',{headers:{"Authorization":token}})
+        const userResponse = await axios.get('http://localhost:3000/user/ispremium', { headers: { "Authorization": token } })
         if (userResponse.data.isPremiumUser) {
             const premiumBtn = document.getElementById('rzp-button');
             premiumBtn.textContent = 'Premium User';
-            premiumBtn.disabled = true; 
+            const puser = document.createElement('p')
+            puser.textContent = "You are Premium user"
+
+            premiumBtn.replaceWith(puser)
+
+            showLeaderBoard()
+
+
+
         }
     }
-    catch(error){
-console.error("Error updating premium",error)
+    catch (error) {
+        console.error("Error updating premium", error)
     }
 
+}
+
+
+function showLeaderBoard() {
+    const inputElement = document.createElement('input')
+
+    inputElement.type = 'button'
+    inputElement.value = 'Show Leaderboard'
+    inputElement.onclick = async () => {
+        try {
+            const token = localStorage.getItem('token')
+            const userLeaderBoardArray = await axios.get('http://localhost:3000/premium/showleaderboard', { headers: { "Authorization": token } })
+            console.log(userLeaderBoardArray)
+
+            var leaderBoardEle = document.getElementById('leaderboard')
+            leaderBoardEle.innerHTML = '<h1>Leaderboard</h1>'
+
+            userLeaderBoardArray.data.forEach((userDetails) => {
+                leaderBoardEle.innerHTML += `<li> Name-${userDetails.name}--Total Expense ${userDetails.total_cost}     </li>`
+
+            })
+        }
+        catch (err) {
+            console.error("Error fetching leaderboard", err)
+        }
+    }
+    document.getElementById('message').appendChild(inputElement)
 }
 
 
@@ -95,17 +130,17 @@ window.addEventListener("DOMContentLoaded", async () => {
 
     await updatePremiumStatus()
     const token = localStorage.getItem('token')
-try{
-    const response = await axios.get("http://localhost:3000/expense/get-expense", { headers: { "Authorization": token } })
+    try {
+        const response = await axios.get("http://localhost:3000/expense/get-expense", { headers: { "Authorization": token } })
 
-    console.log(response.data.allExpense)
-    for (let i = 0; i < response.data.allExpense.length; i++) {
-        displayExpenseOnScreen(response.data.allExpense[i])
-    } 
-}
-catch(err){
-    console.log("Error fetching data",err)
-}
+        console.log(response.data.allExpense)
+        for (let i = 0; i < response.data.allExpense.length; i++) {
+            displayExpenseOnScreen(response.data.allExpense[i])
+        }
+    }
+    catch (err) {
+        console.log("Error fetching data", err)
+    }
 
 
 
@@ -133,6 +168,7 @@ function displayExpenseOnScreen(expense) {
             .then(result => {
                 console.log("Expense Deleted")
                 list.removeChild(newList)
+                showLeaderBoard()
             })
             .catch(err => {
                 console.log(err)
@@ -165,6 +201,7 @@ document.getElementById('rzp-button').onclick = async function (e) {
             alert("You are premium User Now")
 
             location.reload()
+
         }
     }
     const rzp1 = new Razorpay(options)
