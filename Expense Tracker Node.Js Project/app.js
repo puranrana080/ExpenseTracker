@@ -16,6 +16,7 @@ const expenseRoutes = require('./routes/expense')
 const userRoutes = require('./routes/user')
 const purchaseRoutes = require('./routes/purchase')
 const premiumRoutes=require('./routes/premium')
+const passwordRoutes=require('./routes/password')
 app.use(cors())
 app.use(express.json())
 app.use(express.static(path.join(__dirname, 'public')))
@@ -25,6 +26,7 @@ app.use(userRoutes)
 app.use(expenseRoutes)
 app.use(purchaseRoutes)
 app.use(premiumRoutes)
+app.use(passwordRoutes)
 
 
 

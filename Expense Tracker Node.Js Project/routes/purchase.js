@@ -10,6 +10,5 @@ router.post('/purchase/updatetransactionstatus',userauthentication.authenticate,
 
 router.post('/purchase/failedtransactionstatus',userauthentication.authenticate,purchaseController.updateTransactionStatusToFailed)
 
-router.get('/user/ispremium',userauthentication.authenticate,purchaseController.checkUserPremium)
 
 module.exports = router
