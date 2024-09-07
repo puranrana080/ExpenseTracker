@@ -64,6 +64,8 @@ function handleAddExpense(event) {
         .then(response => {
             displayExpenseOnScreen(response.data.expenseData)
             event.target.reset()
+            
+            
         })
 
         .catch(err => {
@@ -86,9 +88,16 @@ async function updatePremiumStatus() {
 
             premiumBtn.replaceWith(puser)
 
-            showLeaderBoard()
+            const leaderboardBtn = document.createElement('input')
+    leaderboardBtn.type = 'button'
+    leaderboardBtn.id='leaderboardBtn'
+    leaderboardBtn.value = 'Show Leaderboard'
 
+    const body=document.querySelector('body')
+    const reference=document.getElementById('expenselist')
 
+    body.insertBefore(leaderboardBtn,reference)
+    showLeaderBoard()
 
         }
     }
@@ -100,11 +109,9 @@ async function updatePremiumStatus() {
 
 
 function showLeaderBoard() {
-    const inputElement = document.createElement('input')
+    const leaderboardButton=document.getElementById('leaderboardBtn')
 
-    inputElement.type = 'button'
-    inputElement.value = 'Show Leaderboard'
-    inputElement.onclick = async () => {
+    leaderboardButton.onclick = async () => {
         try {
             const token = localStorage.getItem('token')
             const userLeaderBoardArray = await axios.get('http://localhost:3000/premium/showleaderboard', { headers: { "Authorization": token } })
@@ -122,7 +129,6 @@ function showLeaderBoard() {
             console.error("Error fetching leaderboard", err)
         }
     }
-    document.getElementById('message').appendChild(inputElement)
 }
 
 
