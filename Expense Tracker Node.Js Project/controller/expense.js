@@ -2,6 +2,13 @@ const Expense = require('../model/expense')
 const path = require('path')
 const User = require('../model/user')
 const sequelize = require('../util/user')
+require('dotenv').config()
+const AWS = require('aws-sdk')
+const UserServices = require('../services/userservices')
+const S3Services = require('../services/S3services')
+const FilesDownloaded = require('../model/filesdownloaded')
+
+
 
 exports.getExpenseFrom = (req, res, next) => {
     res.sendFile(path.join(__dirname, "../public/add_expense.html"))
@@ -88,5 +95,43 @@ exports.deleteExpense = async (req, res, next) => {
         console.log(error)
         res.status(500).json({ message: "failed to delete" })
     }
+
+}
+
+
+
+
+
+
+exports.downloadexpense = async (req, res) => {
+
+    try {
+        if(!req.user.ispremiumuser){
+            console.log("User is not authorizes as not premium user")
+            res.status(401).json({message:"user not authorized"})
+
+        }
+
+
+        const expenses = await UserServices.getExpenses(req)
+        console.log("yes ecenses", expenses)
+        const stringifiedExpenses = JSON.stringify(expenses)
+        const userId = req.user.id
+        const filename = `Expense${userId}/${new Date}.txt`
+        const fileURL = await S3Services.uploadToS3(stringifiedExpenses, filename)
+
+
+        FilesDownloaded.create({
+            filedownloadedURL: fileURL,
+            userId: userId
+        })
+        res.status(200).json({ fileURL })
+
+    }
+    catch (err) {
+        console.log(err)
+        res.status(500).json({ message: "something went wrong", err })
+    }
+
 
 }

@@ -64,8 +64,8 @@ function handleAddExpense(event) {
         .then(response => {
             displayExpenseOnScreen(response.data.expenseData)
             event.target.reset()
-            
-            
+
+
         })
 
         .catch(err => {
@@ -89,15 +89,15 @@ async function updatePremiumStatus() {
             premiumBtn.replaceWith(puser)
 
             const leaderboardBtn = document.createElement('input')
-    leaderboardBtn.type = 'button'
-    leaderboardBtn.id='leaderboardBtn'
-    leaderboardBtn.value = 'Show Leaderboard'
+            leaderboardBtn.type = 'button'
+            leaderboardBtn.id = 'leaderboardBtn'
+            leaderboardBtn.value = 'Show Leaderboard'
 
-    const body=document.querySelector('body')
-    const reference=document.getElementById('expenselist')
+            const body = document.querySelector('body')
+            const reference = document.getElementById('expenselist')
 
-    body.insertBefore(leaderboardBtn,reference)
-    showLeaderBoard()
+            body.insertBefore(leaderboardBtn, reference)
+            showLeaderBoard()
 
         }
     }
@@ -109,7 +109,7 @@ async function updatePremiumStatus() {
 
 
 function showLeaderBoard() {
-    const leaderboardButton=document.getElementById('leaderboardBtn')
+    const leaderboardButton = document.getElementById('leaderboardBtn')
 
     leaderboardButton.onclick = async () => {
         try {
@@ -143,6 +143,14 @@ window.addEventListener("DOMContentLoaded", async () => {
         for (let i = 0; i < response.data.allExpense.length; i++) {
             displayExpenseOnScreen(response.data.allExpense[i])
         }
+
+        const downloadlistresponse = await axios.get('http://localhost:3000/user/downloadlist', { headers: { "Authorization": token } })
+
+        console.log(downloadlistresponse.data)
+
+        downloadlistresponse.data.userDownloads.forEach((list, i) => {
+            displayDownloadList(list, i)
+        })
     }
     catch (err) {
         console.log("Error fetching data", err)
@@ -152,6 +160,14 @@ window.addEventListener("DOMContentLoaded", async () => {
 
 
 })
+
+function displayDownloadList(downloadList, i) {
+    const olList = document.getElementById('downloadlist')
+
+    const fileList = document.createElement('li')
+    fileList.appendChild(document.createTextNode(`File ${i + 1}:-  ${downloadList.filedownloadedURL}  `))
+    olList.appendChild(fileList)
+}
 
 function displayExpenseOnScreen(expense) {
     const list = document.querySelector('ul')
@@ -233,22 +249,23 @@ document.getElementById('rzp-button').onclick = async function (e) {
 
 
 
-function download(){
-    axios.get('http://localhost:3000/user/download', { headers: {"Authorization" : token} })
-    .then((response) => {
-        if(response.status === 201){
-            //the bcakend is essentially sending a download link
-            //  which if we open in browser, the file would download
-            var a = document.createElement("a");
-            a.href = response.data.fileUrl;
-            a.download = 'myexpense.csv';
-            a.click();
-        } else {
-            throw new Error(response.data.message)
-        }
+function download() {
+    const token = localStorage.getItem('token')
+    axios.get('http://localhost:3000/user/download', { headers: { "Authorization": token } })
+        .then((response) => {
+            if (response.status === 200) {
+                // the backend will send download link, and when we open it in browser,
+                // file gets downloaded
+                var a = document.createElement("a");
+                a.href = response.data.fileURL;
+                a.download = 'myexpense.csv';
+                a.click();
+            } else {
+                throw new Error(response.data.message)
+            }
 
-    })
-    .catch((err) => {
-        showError(err)
-    });
+        })
+        .catch((err) => {
+            alert("Buy Premium to Download File", err)
+        });
 }

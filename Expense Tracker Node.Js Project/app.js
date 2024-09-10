@@ -4,6 +4,7 @@ const sequelize = require("./util/user")
 const User = require('./model/user')
 const Expense = require('./model/expense')
 const Order = require('./model/order')
+const FilesDownloaded=require('./model/filesdownloaded')
 const app = express()
 const cors = require('cors')
 const ForgotPasswordRequests=require('./model/forgotpasswordrequests')
@@ -39,6 +40,9 @@ Order.belongsTo(User)
 
 User.hasMany(ForgotPasswordRequests)
 ForgotPasswordRequests.belongsTo(User)
+
+User.hasMany(FilesDownloaded)
+FilesDownloaded.belongsTo(User)
 
 
 
