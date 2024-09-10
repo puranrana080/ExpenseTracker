@@ -55,12 +55,39 @@ exports.postAddExpense = async (req, res, next) => {
 
 }
 
+
+
+const ITEM_PER_PAGE=2;
 exports.getExpense = async (req, res, next) => {
     try {
-        const getAllExpense = await Expense.findAll({ where: { userId: req.user.id } })
-        res.status(200).json({
-            allExpense: getAllExpense
-        })
+        // const getAllExpense = await Expense.findAll({ where: { userId: req.user.id } })
+        // res.status(200).json({
+        //     allExpense: getAllExpense
+        // })
+
+        const page=parseInt(req.query.page) ||1
+        
+
+        const totalItems=await Expense.count({where:{userId:req.user.id}})
+        
+           
+            const expenses=await Expense.findAll({where:{userId:req.user.id},
+                offset:(page-1)*ITEM_PER_PAGE,
+                limit:ITEM_PER_PAGE
+            })
+        
+        
+
+            res.status(200).json({expenses:expenses,
+                currentPage:page,
+                hasNextPage:ITEM_PER_PAGE*page<totalItems,
+                nextPage:page+1,
+                hasPreviousPage:page>1,
+                previousPage:page-1,
+                lastPage:Math.ceil(totalItems/ITEM_PER_PAGE)
+            })
+        
+        
 
     }
     catch (error) {
@@ -135,3 +162,5 @@ exports.downloadexpense = async (req, res) => {
 
 
 }
+
+

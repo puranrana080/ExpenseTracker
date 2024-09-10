@@ -137,12 +137,13 @@ window.addEventListener("DOMContentLoaded", async () => {
     await updatePremiumStatus()
     const token = localStorage.getItem('token')
     try {
-        const response = await axios.get("http://localhost:3000/expense/get-expense", { headers: { "Authorization": token } })
+        const response = await axios.get("http://localhost:3000/expense/get-expense?page=1", { headers: { "Authorization": token } })
 
-        console.log(response.data.allExpense)
-        for (let i = 0; i < response.data.allExpense.length; i++) {
-            displayExpenseOnScreen(response.data.allExpense[i])
+        console.log(response.data.expenses)
+        for (let i = 0; i < response.data.expenses.length; i++) {
+            displayExpenseOnScreen(response.data.expenses[i])
         }
+        showPagination(response.data)
 
         const downloadlistresponse = await axios.get('http://localhost:3000/user/downloadlist', { headers: { "Authorization": token } })
 
@@ -160,7 +161,73 @@ window.addEventListener("DOMContentLoaded", async () => {
 
 
 })
+//hhhhhhhhhhhhhhhhhhpagination
+function getExpenses(page){
+    const token=localStorage.getItem('token')
+    axios.get(`http://localhost:3000/expense/get-expense?page=${page}`,{
+        headers:{"Authorization":token}
+    })
+    .then(({data:{expenses,...pageData}})=>{
+        document.getElementById('expense-list').innerHTML = ''
+        expenses.forEach(expense => displayExpenseOnScreen(expense))
+        showPagination(pageData)
+    })
+    .catch((err)=>{
+        console.log(err)
+    })
 
+} 
+
+function showPagination({currentPage,
+    hasNextPage,
+    nextPage,
+    hasPreviousPage,
+    previousPage,
+    lastPage
+}){
+    const pagination=document.getElementById('pagination')
+    pagination.innerHTML=''
+
+    if(hasPreviousPage){
+        const btn2=document.createElement('button')
+        btn2.innerHTML=previousPage
+        btn2.addEventListener('click',()=>{
+            getExpenses(previousPage)
+        })
+        pagination.appendChild(btn2)
+    }
+
+    const btn1=document.createElement('button')
+    btn1.innerHTML=`<h3>${currentPage}</h3>`
+    btn1.addEventListener('click',()=>{
+        getExpenses(currentPage)
+    })
+    pagination.appendChild(btn1)
+
+    if(hasNextPage){
+        const btn3=document.createElement('button')
+        btn3.innerHTML=nextPage
+        btn3.addEventListener('click',()=>{
+            getExpenses(nextPage)
+        })
+        pagination.appendChild(btn3)
+    }
+    if (currentPage !== lastPage) {
+        const lastPageBtn = document.createElement('button');
+        lastPageBtn.innerHTML = `Last (${lastPage})`;
+        lastPageBtn.addEventListener('click', () => {
+            getExpenses(lastPage);
+        });
+        pagination.appendChild(lastPageBtn);
+    }
+
+}
+
+
+
+
+
+// pagination
 function displayDownloadList(downloadList, i) {
     const olList = document.getElementById('downloadlist')
 
