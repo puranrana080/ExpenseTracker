@@ -137,12 +137,16 @@ window.addEventListener("DOMContentLoaded", async () => {
     await updatePremiumStatus()
     const token = localStorage.getItem('token')
     try {
-        const response = await axios.get("http://localhost:3000/expense/get-expense?page=1", { headers: { "Authorization": token } })
+        // const response = await axios.get("http://localhost:3000/expense/get-expense?page=1", { headers: { "Authorization": token } })
 
-        console.log(response.data.expenses)
-        for (let i = 0; i < response.data.expenses.length; i++) {
-            displayExpenseOnScreen(response.data.expenses[i])
-        }
+
+        document.getElementById('itemsPerPage').value = getItemsPerPage();
+        getExpenses(1);
+
+        // console.log(response.data.expenses)
+        // for (let i = 0; i < response.data.expenses.length; i++) {
+        //     displayExpenseOnScreen(response.data.expenses[i])
+        // }
         showPagination(response.data)
 
         const downloadlistresponse = await axios.get('http://localhost:3000/user/downloadlist', { headers: { "Authorization": token } })
@@ -161,10 +165,24 @@ window.addEventListener("DOMContentLoaded", async () => {
 
 
 })
-//hhhhhhhhhhhhhhhhhhpagination
+
+function setItemsPerPage() {
+    const itemsPerPage = document.getElementById('itemsPerPage').value;
+    localStorage.setItem('itemsPerPage', itemsPerPage);
+    getExpenses(1);  // Refresh expenses on change
+}
+
+function getItemsPerPage() {
+    return localStorage.getItem('itemsPerPage') || 10;  // Default to 10 if no setting
+}
+
+
+
+//pagination
 function getExpenses(page){
     const token=localStorage.getItem('token')
-    axios.get(`http://localhost:3000/expense/get-expense?page=${page}`,{
+    const itemsPerPage=getItemsPerPage()
+    axios.get(`http://localhost:3000/expense/get-expense?page=${page}&limit=${itemsPerPage}`,{
         headers:{"Authorization":token}
     })
     .then(({data:{expenses,...pageData}})=>{

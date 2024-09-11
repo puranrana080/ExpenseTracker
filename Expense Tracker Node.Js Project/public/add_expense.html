@@ -31,6 +31,13 @@
 
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <h1 id="expenselist">Expense</h1>
+    <label for="itemsPerPage">Expenses per Page:</label>
+    <select id="itemsPerPage" onchange="setItemsPerPage()">
+        <option value="2">2</option>
+        <option value="5" selected>5</option>
+        <option value="10">10</option>
+        <option value="20">20</option>
+    </select>
     <ul id="expense-list"></ul>
     <div id="pagination"></div>
     <div id="listofdownloads">
