@@ -133,29 +133,30 @@ exports.downloadexpense = async (req, res) => {
     try {
         if(!req.user.ispremiumuser){
             console.log("User is not authorizes as not premium user")
-            res.status(401).json({message:"user not authorized"})
+            return res.status(401).json({message:"user not authorized"})
 
         }
+        
 
 
         const expenses = await UserServices.getExpenses(req)
-        console.log("yes ecenses", expenses)
+        console.log("user expenses", expenses)
         const stringifiedExpenses = JSON.stringify(expenses)
         const userId = req.user.id
-        const filename = `Expense${userId}/${new Date}.txt`
+        const filename = `Expense${userId}/${new Date()}.txt`
         const fileURL = await S3Services.uploadToS3(stringifiedExpenses, filename)
 
 
-        FilesDownloaded.create({
+        await FilesDownloaded.create({
             filedownloadedURL: fileURL,
             userId: userId
         })
-        res.status(200).json({ fileURL })
-
+        return res.status(200).json({ fileURL })
+    
     }
     catch (err) {
         console.log(err)
-        res.status(500).json({ message: "something went wrong", err })
+        return res.status(500).json({ message: "something went wrong", err })
     }
 
 

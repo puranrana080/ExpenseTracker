@@ -30,13 +30,13 @@ exports.getUserDownloadList = async (req, res, next) => {
         console.log("This is user Id ", userId)
         const userDownloads = await FilesDownloaded.findAll({ where: { userId: userId } })
 
-        res.status(200).json({ userDownloads })
+        return res.status(200).json({ userDownloads })
 
 
     }
     catch (err) {
         console.log("error fetch user downloads", err)
-        res.status(500).json({ message: "something wrong", error: err })
+        return res.status(500).json({ message: "something wrong", error: err })
 
     }
 

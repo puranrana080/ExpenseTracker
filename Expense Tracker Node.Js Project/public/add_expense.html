@@ -8,11 +8,12 @@
 </head>
 
 <body>
+    
 
     <form onsubmit="handleAddExpense(event)">
-        <label for="">Choose ExpenseAmount</label>
+        <label for="amount">Choose ExpenseAmount</label>
         <input type="text" id="amount" name="amount">
-        <label for="">Choose description</label>
+        <label for="description">Choose description</label>
         <input type="text" id="description" name="description">
         <label for="category">Choose a category</label>
         <select name="category" id="category">
@@ -27,9 +28,9 @@
     </form>
     <div id="message"></div>
     <button id="rzp-button">Buy Premium</button>
-    <button onclick="download()" id="downloadexpense">Download File</button>
+    <button id="downloadexpense">Download File</button>
 
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+   
     <h1 id="expenselist">Expense</h1>
     <label for="itemsPerPage">Expenses per Page:</label>
     <select id="itemsPerPage" onchange="setItemsPerPage()">
@@ -51,12 +52,11 @@
 
     <ol id="listofdownloads"></ol>
 
+    
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.7/axios.min.js"></script>
+   <script src="add_expense.js"></script>
 
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.7/axios.min.js"
-        integrity="sha512-DdX/YwF5e41Ok+AI81HI8f5/5UsoxCVT9GKYZRIzpLxb8Twz4ZwPPX+jQMwMhNQ9b5+zDEefc+dcvQoPWGNZ3g=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="index.js"></script>
 
 </body>
 

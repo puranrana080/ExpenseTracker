@@ -13,5 +13,7 @@ function forgotPassword(event){
     })
     .catch(err=>{
         console.log(err)
+        const body=document.querySelector('body')
+        body.innerHTML+="User not found, something went wrong"
     })
 }
