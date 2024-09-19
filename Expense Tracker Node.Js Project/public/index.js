@@ -8,9 +8,9 @@ function registeringUser(event) {
         password: event.target.password.value
     }
 
-    axios.post("http://localhost:3000/user/register", newUser)
+    axios.post("http://34.207.137.168:3000/user/register", newUser)
         .then(response => {
-            console.log("User Added", response.data.message)
+            console.log("User Added Successfully", response.data.message)
             event.target.reset()
         })
         .catch(err => {
@@ -28,7 +28,7 @@ function loginUser(event) {
         email: event.target.email.value,
         password: event.target.password.value
     }
-    axios.post("http://localhost:3000/user/login", loginData)
+    axios.post("http://34.207.137.168:3000/user/login", loginData)
         .then(response => {
             alert("Login successful")
             console.log("User Logged in", response.data.message)

@@ -5,8 +5,6 @@ const urlParams = new URLSearchParams(window.location.search);
 const uuid = urlParams.get('uuid')
 document.getElementById('uuid').value = uuid
 
-
-
 console.log("UUID", uuid); 
 
 if (uuid) {
@@ -23,7 +21,7 @@ function updatePassword(event) {
     const newPassword = document.getElementById('newPassword').value
     const uuid = document.getElementById('uuid').value
 
-    axios.post("http://localhost:3000/password/updatepassword", {
+    axios.post("http://34.207.137.168:3000/password/updatepassword", {
         uuid: uuid,
         newPassword: newPassword
     })

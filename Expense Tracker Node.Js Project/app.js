@@ -39,6 +39,11 @@ app.use(purchaseRoutes)
 app.use(premiumRoutes)
 app.use(passwordRoutes)
 
+app.use((req,res)=>{
+    console.log('url',req.url)
+    res.sendFile(path.join(__dirname,`public/${req.url}`))
+})
+
 
 
 User.hasMany(Expense)
@@ -62,6 +67,7 @@ FilesDownloaded.belongsTo(User)
     .then(() => {
         app.listen(process.env.PORT || 3000,()=>{
             console.log("inside port")
+            
         })
 
     })

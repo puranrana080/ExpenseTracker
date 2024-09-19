@@ -53,7 +53,7 @@ exports.forgotPassword = async (req, res, next) => {
             sender,
             to: receivers,
             subject: 'Link for the reset',
-            textContent: `http://localhost:3000/password/resetpassword/${resetRequest.id} "click here for reset"`
+            textContent: `http://34.207.137.168:3000/password/resetpassword/${resetRequest.id} "click here for reset"`
         })
 
         console.log("Email sent successfully:", response);
