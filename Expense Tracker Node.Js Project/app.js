@@ -45,7 +45,6 @@ app.use((req,res)=>{
 })
 
 
-
 User.hasMany(Expense)
 Expense.belongsTo(User)
 
